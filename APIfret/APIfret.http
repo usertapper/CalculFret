@@ -1,0 +1,6 @@
+@APIfret_HostAddress = http://localhost:5228
+
+GET {{APIfret_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

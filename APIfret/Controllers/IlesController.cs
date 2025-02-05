@@ -6,9 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIfret.Controllers;
 
-[ApiController]
-[Route("api/[controller]")] // /api/iles
-public class IlesController(DataContext context) : ControllerBase
+public class IlesController(DataContext context) : BaseApiController
 {
 
     [HttpGet]

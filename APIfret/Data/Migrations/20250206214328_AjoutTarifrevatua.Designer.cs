@@ -2,6 +2,7 @@
 using APIfret.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIfret.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250206214328_AjoutTarifrevatua")]
+    partial class AjoutTarifrevatua
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.1");
@@ -37,6 +40,10 @@ namespace APIfret.Data.Migrations
 
             modelBuilder.Entity("APIfret.Entities.Tarifsrevatuas", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -50,6 +57,8 @@ namespace APIfret.Data.Migrations
 
                     b.Property<bool>("TauxPriseEnCharge")
                         .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Tarifsrevatuas");
                 });

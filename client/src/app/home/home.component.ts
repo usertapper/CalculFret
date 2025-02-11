@@ -28,6 +28,9 @@ export class HomeComponent implements OnInit {
 
   montant?: number;
   errorMessage: string = "";
+
+  poids!: number;
+  resultat!: number;
  
   ileService = new IleService(this.http);
   tarifsrevatuaService = new TarifsRevatuaService(this.http);
@@ -48,7 +51,7 @@ export class HomeComponent implements OnInit {
     if (this.ileDepartId && this.ileArriveeId && this.codeTarif) {
       this.getMontantFret(this.codeTarif, this.ileDepartId, this.ileArriveeId);
     } else {
-      this.errorMessage = "FAUX";
+      this.errorMessage = "Veuillez remplir les champs manquants"
       this.montant = undefined;
     }
   }
@@ -67,6 +70,14 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  calcul(): void {
+    if (this.montant && this.poids) {
+      this.resultat = this.poids * this.montant;
+    } else {
+      console.error("Le montant n'est pas définit");
+    }
+  }
+
   resetForm(): void {
     this.ileDepartId = undefined;
     this.ileArriveeId = undefined;
@@ -74,5 +85,6 @@ export class HomeComponent implements OnInit {
     this.montant = undefined;
     this.errorMessage = "";
   }
+
 }
  

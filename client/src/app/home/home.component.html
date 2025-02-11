@@ -25,9 +25,15 @@
     </select>
   </div>
 
+  <div class="col-md-3">
+    <label>Poids</label>
+    <input type="number" [(ngModel)]="poids" name="poids" required/>
+  </div>
+
   <div class="container mt-5">
     <div class="text-center">
       <button type="submit" class="btn btn-primary btn-lg me-2">Calculer</button>
+      <button type="button" class="btn btn-primary btn-lg me-2" (click)="calcul()">Calculer le fret</button>
       <button type="button" class="btn btn-secondary btn-lg me-2" (click)="resetForm()">Annuler</button>
     </div>
   </div>
@@ -35,7 +41,10 @@
 
 <div class="text-center mt-3">
   <h3>Montant du tarif</h3>
-  <p *ngIf="montant !== undefined; else noData">{{ montant }} XPF</p>
+  <p *ngIf="montant !== undefined; else noData">{{ montant | number}} XPF</p>
+
+  <h3>Calcul du Fret</h3>
+  <p *ngIf="resultat !== undefined; else noData">{{ resultat | number}} XPF</p>
 
   <ng-template #noData>
     <p *ngIf="errorMessage">{{ errorMessage }}</p>

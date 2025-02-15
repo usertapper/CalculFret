@@ -17,7 +17,7 @@ export class AppComponent implements OnInit{
   iles: any;
 
   ngOnInit(): void {
-    this.http.get('https://localhost:5001/api/tarifsrevatuas').subscribe({
+    this.http.get('https://localhost:5001/api/tariffret').subscribe({
       next: response => this.iles = response,
       error: error => console.log(error),
       complete: ()=> console.log('Request has completed')

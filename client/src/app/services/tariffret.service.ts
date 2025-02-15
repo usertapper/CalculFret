@@ -35,5 +35,9 @@ export class TarifFretService implements OnInit{
     });
   }
 
+  getCodeTarifs(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api/tariffret/codetarifs`);
+  }
+
 
 }

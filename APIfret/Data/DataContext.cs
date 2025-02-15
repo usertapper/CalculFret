@@ -8,7 +8,6 @@ namespace APIfret.Data;
 public class DataContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Iles> Iles { get; set; }
-
     public DbSet<Tarifsrevatuas> Tarifsrevatuas { get; set; }
     public DbSet<TarifFrets> TarifFrets { get; set; }
 
@@ -16,10 +15,10 @@ public class DataContext(DbContextOptions options) : DbContext(options)
     {
         modelBuilder.Entity<Tarifsrevatuas>()
             .HasNoKey();
-            modelBuilder.Entity<TarifFrets>()
+        modelBuilder.Entity<TarifFrets>()
             .HasNoKey();
     }
 }
 
-   
+
 

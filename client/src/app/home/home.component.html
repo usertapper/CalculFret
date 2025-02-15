@@ -1,23 +1,31 @@
 <form (ngSubmit)="onSubmit()">
-  <div class="col-md-3">
+  <div class="col-md-2">
     <label>Ile de Départ</label>
-    <select class="form-select" [(ngModel)]="ileDepartId" name="ileDepartId" required>
-      <option selected disabled>Choisissez votre île...</option>
-      <option *ngFor="let ile of iles" [value]="ile.id">{{ ile.intitule }}</option>
-    </select>
+    <mat-form-field appaerance="outline">
+      <input type="text" matInput [formControl]="ileDepartControl" [matAutocomplete]="autoDepart" name="ileDepartId" required>
+        <mat-autocomplete #autoDepart="matAutocomplete" (optionSelected)="setIleDepart($event.option.value)">
+        <mat-option selected disabled>Choisissez votre île...</mat-option>
+        <mat-option *ngFor="let ile of filteredIlesDepart" [value]="ile">
+          {{ ile.intitule }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-2">
     <label>Ile d'Arrivée</label>
-    <select class="form-select" [(ngModel)]="ileArriveeId" name="ileArriveeId" [disabled]="!ileDepartId" required>
-      <option selected disabled>Choisissez votre destination...</option>
-      <option *ngFor="let ile of iles" [value]="ile.id" [disabled]="ile.id === ileDepartId">
+    <mat-form-field appearance="outline">
+    <input type="text" matInput [formControl]="ileArriveeControl" [matAutocomplete]="autoArrivee" name="ileArriveeId" required>
+      <mat-autocomplete #autoArrivee="matAutocomplete" (optionSelected)="setIleArrivee($event.option.value)">
+      <mat-option selected disabled>Choisissez votre destination...</mat-option>
+      <mat-option *ngFor="let ile of filteredIlesArrivee" [value]="ile">
         {{ ile.intitule }}
-      </option>
-    </select>
+      </mat-option>
+      </mat-autocomplete>
+  </mat-form-field>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-2">
     <label>Marchandises</label>
     <select class="form-select" [(ngModel)]="codeTarif" name="codeTarif" required>
       <option selected disabled>Choisissez votre marchandise...</option>
@@ -25,9 +33,13 @@
     </select>
   </div>
 
-  <div class="col-md-3">
-    <label>Poids</label>
-    <input type="number" [(ngModel)]="poids" name="poids" required/>
+  <div class="col-md-2">
+    <label class="form-label">Poids (en Tonne)</label>
+    <input type="number" class="form-control" [(ngModel)]="poids" name="poids" required/>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Volume (en m3)</label>
+    <input type="number" class="form-control" [(ngModel)]="volume" name="volume" required/>
   </div>
 
   <div class="container mt-5">
@@ -40,10 +52,10 @@
 </form>
 
 <div class="text-center mt-3">
-  <h3>Montant du tarif</h3>
+  <h3>Tarif</h3>
   <p *ngIf="montant !== undefined; else noData">{{ montant | number}} XPF</p>
 
-  <h3>Calcul du Fret</h3>
+  <h3>Fret</h3>
   <p *ngIf="resultat !== undefined; else noData">{{ resultat | number}} XPF</p>
 
   <ng-template #noData>

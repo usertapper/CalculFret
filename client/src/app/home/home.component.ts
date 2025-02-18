@@ -50,10 +50,12 @@ export class HomeComponent implements OnInit {
   lastPoids?: number;
   poidsEnTonne?: number;
   volume!: number;
+  methode!: string;
+  quantite!: number;
   lastVolume?: number;
   volumeEnMettreCube?: number;
 
-  resultat!: number;
+  result: number = 0;
 
   ileDepartControl = new FormControl('');
   ileArriveeControl = new FormControl('');
@@ -127,21 +129,15 @@ export class HomeComponent implements OnInit {
     );
   }
 
-    calcul(): void {
-      // if (this.montant === undefined || this.poids === undefined || this.volume === undefined) {
-      //   this.errorMessage = "Le montant, le poids ou le volume est invalide";
-      //   return;
-      // } else {
-      //   console.error("Le calcul ne marche pas");
-      // }
-  
-     if (this.montant && this.poids && this.volume) {        
-       this.resultat = Math.max(this.poids, this.volume) * this.montant;
-     } else {
-       this.errorMessage = "Le montant ou le poids ou le volume est invalide";
-      console.error("Le montant ou le poids ou le volume n'est pas définit");
+ 
+  calculMontantFret(): void {
+    if (this.montant && this.poids) {
+      this.result = this.poids * this.montant;
+    } else {
+      console.error("Le montant n'est pas définit");
     }
   }
+  
 
   resetForm(): void {
     this.ileDepartId = undefined;
@@ -151,7 +147,7 @@ export class HomeComponent implements OnInit {
     this.errorMessage = "";
     this.poids = 0;
     this.volume = 0;
-    this.resultat = 0;
+    this.result = 0;
     this.ileDepartControl.setValue('');
     this.ileArriveeControl.setValue('');
   }

@@ -63,7 +63,7 @@ public class TarifFretController(DataContext context) : BaseApiController
 
         // // Vérification Ile d'arrivée
         var ileArrivee = await context.Iles.FirstOrDefaultAsync(i => i.Id == ileArriveeId);
-        if (ileArrivee == null) throw new ArgumentException($"L'ile {ileDepartId} est introuvable");
+        if (ileArrivee == null) throw new ArgumentException($"L'ile {ileArriveeId} est introuvable");
 
         // Recherche du fret
         var tariffret = await context
@@ -85,12 +85,13 @@ public class TarifFretController(DataContext context) : BaseApiController
         return result;
 
     }
+    
+    [HttpGet("calcul")]
 
-    public async Task<decimal> CalculMontantFret(string codeTarif, int ileDepartId, int ileArriveeId, decimal poids, decimal volume, decimal quantite)
+        public async Task<decimal> CalculMontantFret(string codeTarif, int ileDepartId, int ileArriveeId, decimal poids, decimal volume, decimal quantite)
     {
         // Vérification des arguments
         if (string.IsNullOrWhiteSpace(codeTarif)) throw new ArgumentNullException(nameof(codeTarif), "Le code tarif est obligatoire");
-
         var tarif = await this.GetTarifFret(codeTarif, ileDepartId, ileArriveeId);
 
         if(tarif == null) throw new Exception($"Le tarif {codeTarif} est introuvable");

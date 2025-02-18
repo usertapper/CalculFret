@@ -34,9 +34,36 @@ export class TarifFretService implements OnInit{
         }
     });
   }
-
+  
   getCodeTarifs(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/api/tariffret/codetarifs`);
+  }
+
+  calculMontantFret(methode: string, montant: number, poids: number, volume: number, quantite: number): number
+  {
+      let baseCalcule: number;
+
+      switch(methode) {
+          case "Poids":
+              baseCalcule = poids;
+              break;
+          case "Volume":
+              baseCalcule = volume;
+              break;
+          case "PoidsVolume":
+              baseCalcule = Math.max(poids, volume);
+              break;
+          case "Quantité":
+              baseCalcule = quantite;
+              break;
+          default:
+              throw new Error(`Calcul du fret par ${methode} non traité`);
+      }
+
+      const result = Math.round(montant * baseCalcule);
+
+      // Je commence par dire que c'est pas encore implémenté.
+      return result < 609 ? 609 : result;
   }
 
 

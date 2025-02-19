@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment.development';
 
+
 export interface TarifFretDto {
   tariffret: number | undefined;
   code: string;
@@ -43,30 +44,7 @@ export class TarifFretService {
   }
 
   calculMontantFret(codeTarif: string, ileDepartId: number, ileArriveeId: number, poids: number, volume: number, quantite: number): Observable<number> {
-
     
-
-    let baseCalcule: number;
-
-    switch(methode) {
-      case "Poids":
-        baseCalcule = poids;
-        break;
-      case "Volume":
-        baseCalcule = volume;
-        break;
-      case "PoidsVolume":
-        baseCalcule = Math.max(poids, volume);
-        break;
-      case "Quantité":
-        baseCalcule = quantite;
-        break;
-      default:
-        throw new Error('Calcul du fret par {t.Methode} non traité');
-    }
-
-    const result = Math.Round
-
     const params = new HttpParams()
     .set('codeTarif', codeTarif)
     .set('ileDepartId', ileDepartId.toString())

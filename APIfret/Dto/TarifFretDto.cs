@@ -1,6 +1,6 @@
 public class TarifFretDto
 {
-    public string Code { get; set; }
-    public string Methode { get; set; }
+    public required string Code { get; set; }
+    public required string Methode { get; set; }
     public decimal Montant { get; set; }
 }

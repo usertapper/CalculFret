@@ -4,6 +4,7 @@ using APIfret.Data;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using APIfret.Services;
 
 
 namespace APIFret.Tests;
@@ -108,7 +109,9 @@ public class TarifFretsControllerTest
         var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
         optionsBuilder.UseSqlite("Data source=fret.db");
         var context = new DataContext(optionsBuilder.Options);
-        var controller = new TarifFretController(context);
+        var tarifService = new TarifService(context);
+        var calculService = new CalculMontantFretService(tarifService);
+        var controller = new TarifFretController(tarifService, calculService);
 
         return controller;
     }

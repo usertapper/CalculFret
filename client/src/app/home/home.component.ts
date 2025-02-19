@@ -1,4 +1,4 @@
-import { IleService } from '../services/ile.service';
+import { IleDto, IleService } from '../services/ile.service';
 import { Component, inject, OnInit, } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -9,9 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl } from '@angular/forms';
-import { ColDef } from 'ag-grid-community';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-quartz.css';
 
 
 
@@ -26,11 +23,6 @@ import 'ag-grid-community/styles/ag-theme-quartz.css';
     ReactiveFormsModule,
   ],
   templateUrl: './home.component.html',
-  template: `
-      <ag-grid-angular
-          class="ag-theme-quartz" style="height: 500px"
-          [rowData]="rowData" [columnDefs]="colDefs" />
-    `,
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
@@ -44,8 +36,6 @@ export class HomeComponent implements OnInit {
   codeTarif?: string;
 
   montant?: number;
-  methode?: number;
-  baseCalcule?: number;
   poids?: number;
   volume?: number;
   quantite?: number;
@@ -62,15 +52,18 @@ export class HomeComponent implements OnInit {
   filteredIlesDepart: any[] = [];
   filteredIlesArrivee: any[] = [];
  
-  ileService = new IleService;
-  tarifsrevatuaService = new TarifsRevatuaService;
-  tariffretService = new TarifFretService;
+  constructor(
+    private ileService : IleService,
+    private tarifsrevatuaService : TarifsRevatuaService,
+    private tariffretService : TarifFretService
+  ) {}
+ 
 
  
  
   ngOnInit(): void {
  
-    this.ileService.get().subscribe((data) => {
+    this.ileService.get().subscribe((data: IleDto[]) => {
       this.iles = data;
       this.filteredIlesDepart = this.iles;
       this.filteredIlesArrivee = this.iles;
@@ -119,7 +112,7 @@ export class HomeComponent implements OnInit {
   getTariftFret(codeTarif: string, ileDepartId: number, ileArriveeId: number): void {
     this.tariffretService.getTarifFret(codeTarif, ileDepartId, ileArriveeId).subscribe(
       (data) => {
-        this.montant = data.montant;
+        this.montant = this.montant;
         this.errorMessage = "";
       },
       (error) => {
@@ -130,11 +123,10 @@ export class HomeComponent implements OnInit {
     );
   }
 
-
-
-  // calculMontantFret(methode: string, montant: number, poids: number, volume: number, quantite: number): void{
-  //   this.result = this.tariffretService.calculMontantFret(methode, montant, poids, volume, quantite);
-  // }
+  calculMontantFret(codeTarif: string, ileDepartId: number, ileArriveeId: number, poids: number, volume: number, quantite: number): void {
+    this.tariffretService.calculMontantFret(codeTarif, ileDepartId, ileArriveeId, poids, volume, quantite).subscribe(
+    )
+  }
 
 
 

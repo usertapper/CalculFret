@@ -4,6 +4,10 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment.development';
 
+export interface IleDto {
+  Id : number;
+  Intitule : string;
+}
 
 @Injectable({ 
   providedIn: 'root' 
@@ -14,12 +18,12 @@ export class IleService {
   baseUrl = environment.apiUrl;
   
 
-  get(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/api/iles`);
+  get(): Observable<IleDto[]> {
+    return this.http.get<IleDto[]>(`${this.baseUrl}/api/iles`);
   }
 
-  getById(ileId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/api/iles/${ileId}`);
+  getById(ileId: number): Observable<IleDto[]> {
+    return this.http.get<IleDto[]>(`${this.baseUrl}/api/iles/${ileId}`);
   }
 
   

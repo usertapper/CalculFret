@@ -1,0 +1,118 @@
+using System;
+using System.Diagnostics;
+using APIfret.Data;
+using APIfret.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace APIfret.Controllers;
+
+public class TarifFretController : BaseApiController
+{
+    public TarifFretController(DataContext context) : base(context) { }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<TarifFret>>> GetTarifFret()
+    {
+        var tariffret = await context.TarifFrets.ToListAsync();
+        return tariffret;
+    }
+
+    [HttpGet("montants")]
+    public async Task<ActionResult<IEnumerable<decimal>>> GetMontants()
+    {
+        var montants = await context
+            .TarifFrets
+            .Select(x => x.Montant)
+            .ToListAsync();
+
+        return Ok(montants);
+    }
+
+    [HttpGet("code")]
+    public async Task<ActionResult<IEnumerable<string>>> GetCodeTarifs()
+    {
+        var codetarifs = await context
+            .TarifFrets
+            .Select(x => x.Code)
+            .ToListAsync();
+
+        return Ok(codetarifs);
+    }
+
+    [HttpGet("tarif/ileDepart/ileArrivee")]
+    public async Task<ActionResult<IEnumerable<TarifFret>>> GetTarifs(int ileDepart, int ileArrivee)
+    {
+        var result = await context.TarifFrets.Where(t => t.IleArriveeId == ileArrivee && t.IleDepartId == ileDepart)
+                            .ToListAsync();
+
+        return this.Ok(result);
+    }
+
+    [HttpGet("tarif")]
+    public async Task<TarifFretDto> GetTarifFret(string codeTarif, int ileDepartId, int ileArriveeId)
+    {
+        if (string.IsNullOrWhiteSpace(codeTarif)) throw new ArgumentNullException(nameof(codeTarif), "Le code tarif est obligatoire");
+
+        var ileDepart = await context.Iles.FirstOrDefaultAsync(i => i.Id == ileDepartId);
+        if (ileDepart == null) throw new ArgumentException($"L'ile {ileDepartId} est introuvable");
+
+        var ileArrivee = await context.Iles.FirstOrDefaultAsync(i => i.Id == ileArriveeId);
+        if (ileArrivee == null) throw new ArgumentException($"L'ile {ileArriveeId} est introuvable");
+
+        var tariffret = await context
+            .TarifFrets.Where(x =>
+            x.Code == codeTarif &&
+            x.IleDepartId == ileDepartId &&
+            x.IleArriveeId == ileArriveeId)
+            .FirstOrDefaultAsync();
+
+        if (tariffret == null)
+        {
+            throw new Exception($"Tarif introuvable pour le code {codeTarif} le départ {ileDepart.Intitule} et l'arrivée {ileArrivee.Intitule}");
+        }
+
+        var result = new TarifFretDto { Code = tariffret.Code, Methode = tariffret.Case, Montant = tariffret.Montant };
+        return result;
+    }
+
+    [HttpPost("calcul")]
+    public async Task<ActionResult<decimal>> CalculMontantFret([FromBody] CalculFretRequest request)
+    {
+        var tarif = await this.GetTarifFret(request.CodeTarif, request.IleDepartId, request.IleArriveeId);
+        if(tarif == null) throw new Exception($"Le tarif {request.CodeTarif} est introuvable");
+
+        var t = tarif;
+
+        decimal baseCalcule;
+        switch(t.Methode) {
+            case "Poids":
+                baseCalcule = request.Poids;
+                break;
+            case "Volume":
+                baseCalcule = request.Volume;
+                break;
+            case "PoidsVolume":
+                baseCalcule = Math.Max(request.Poids, request.Volume);
+                break;
+            case "Quantité":
+                baseCalcule = request.Quantite;
+                break;
+            default:
+                throw new NotImplementedException($"Calcul du fret par {t.Methode} non traité");
+        }
+
+        var result = Math.Round((t.Montant * baseCalcule), 0);
+        return Ok(result < 609 ? 609 : result);
+    }
+}
+
+public class CalculFretRequest
+{
+    public string CodeTarif { get; set; }
+    public int IleDepartId { get; set; }
+    public int IleArriveeId { get; set; }
+    public decimal Poids { get; set; }
+    public decimal Volume { get; set; }
+    public decimal Quantite { get; set; }
+}

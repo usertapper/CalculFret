@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIfret.Controllers;
 
-public class TarifsrevatuasController(DataContext context) : BaseApiController
+public class TarifsRevatuasController(DataContext context) : BaseApiController
 {
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Tarifsrevatuas>>> GetTarifsrevatuas()
+    public async Task<ActionResult<IEnumerable<TarifsRevatua>>> GetTarifsrevatuas()
     {
         var tarifsrevatuas = await context.Tarifsrevatuas.ToListAsync();
 

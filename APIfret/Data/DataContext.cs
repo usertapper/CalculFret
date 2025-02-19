@@ -7,15 +7,15 @@ namespace APIfret.Data;
 
 public class DataContext(DbContextOptions options) : DbContext(options)
 {
-    public DbSet<Iles> Iles { get; set; }
-    public DbSet<Tarifsrevatuas> Tarifsrevatuas { get; set; }
-    public DbSet<TarifFrets> TarifFrets { get; set; }
+    public DbSet<Ile> Iles { get; set; }
+    public DbSet<TarifsRevatua> Tarifsrevatuas { get; set; }
+    public DbSet<TarifFret> TarifFrets { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Tarifsrevatuas>()
+        modelBuilder.Entity<TarifsRevatua>()
             .HasNoKey();
-        modelBuilder.Entity<TarifFrets>()
+        modelBuilder.Entity<TarifFret>()
             .HasNoKey();
     }
 }

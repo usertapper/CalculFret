@@ -2,7 +2,7 @@ using System;
 
 namespace APIfret.Entities;
 
-public class Tarifsrevatuas
+public class TarifsRevatua
 {
     public required string Code { get; set; }
     public required string Intitule { get; set; }

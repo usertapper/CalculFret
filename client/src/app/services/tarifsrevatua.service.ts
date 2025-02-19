@@ -1,26 +1,20 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment.development';
 
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ 
+  providedIn: 'root' 
+})
+
 export class TarifsRevatuaService {
-  getList() {
-    throw new Error('Method not implemented.');
-  }
-  baseUrl: string;
+  private http = inject(HttpClient);
+  baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {
-    this.baseUrl = "https://localhost:5001";
-  }
 
   get(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/api/tarifsrevatuas`);
   }
-
-  getById(tarifsrevatuasId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/api/tarifsrevatuas/${tarifsrevatuasId}`);
-  }
-
 
 }

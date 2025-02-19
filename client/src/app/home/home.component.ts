@@ -44,18 +44,17 @@ export class HomeComponent implements OnInit {
   codeTarif?: string;
 
   montant?: number;
+  methode?: number;
+  baseCalcule?: number;
+  poids?: number;
+  volume?: number;
+  quantite?: number;
+  result?: number;
+
   errorMessage: string = "";
+ 
 
-  poids!: number;
-  lastPoids?: number;
-  poidsEnTonne?: number;
-  volume!: number;
-  methode!: string;
-  quantite!: number;
-  lastVolume?: number;
-  volumeEnMettreCube?: number;
 
-  result: number = 0;
 
   ileDepartControl = new FormControl('');
   ileArriveeControl = new FormControl('');
@@ -63,9 +62,9 @@ export class HomeComponent implements OnInit {
   filteredIlesDepart: any[] = [];
   filteredIlesArrivee: any[] = [];
  
-  ileService = new IleService(this.http);
-  tarifsrevatuaService = new TarifsRevatuaService(this.http);
-  tariffretService = new TarifFretService(this.http);
+  ileService = new IleService;
+  tarifsrevatuaService = new TarifsRevatuaService;
+  tariffretService = new TarifFretService;
 
  
  
@@ -89,6 +88,8 @@ export class HomeComponent implements OnInit {
       this.filteredIlesArrivee = this.filterIles(value ?? '');
     });
 
+    this.tariffretService;
+
   }
 
   private filterIles(value: string): any[] {
@@ -107,18 +108,18 @@ export class HomeComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.ileDepartId && this.ileArriveeId && this.codeTarif) {
-      this.getMontantFret(this.codeTarif, this.ileDepartId, this.ileArriveeId);
+    if (this.ileDepartId && this.ileArriveeId && this.codeTarif ) {
+      this.getTariftFret(this.codeTarif, this.ileDepartId, this.ileArriveeId,);
     } else {
       this.errorMessage = "Merci de remplir tous les champs";
       this.montant = undefined;
     }
   }
 
-  getMontantFret(codeTarif: string, ileDepartId: number, ileArriveeId: number): void {
-    this.tariffretService.getMontantFret(codeTarif, ileDepartId, ileArriveeId).subscribe(
+  getTariftFret(codeTarif: string, ileDepartId: number, ileArriveeId: number): void {
+    this.tariffretService.getTarifFret(codeTarif, ileDepartId, ileArriveeId).subscribe(
       (data) => {
-        this.montant = data;
+        this.montant = data.montant;
         this.errorMessage = "";
       },
       (error) => {
@@ -129,15 +130,15 @@ export class HomeComponent implements OnInit {
     );
   }
 
- 
-  calculMontantFret(): void {
-    if (this.montant && this.poids) {
-      this.result = this.poids * this.montant;
-    } else {
-      console.error("Le montant n'est pas définit");
-    }
-  }
-  
+
+
+  // calculMontantFret(methode: string, montant: number, poids: number, volume: number, quantite: number): void{
+  //   this.result = this.tariffretService.calculMontantFret(methode, montant, poids, volume, quantite);
+  // }
+
+
+
+
 
   resetForm(): void {
     this.ileDepartId = undefined;

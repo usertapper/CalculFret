@@ -43,7 +43,7 @@ export class TarifFretService {
     return this.http.get<TarifFretDto>(`${this.baseUrl}/api/tariffret/tarif/`, {params})
   }
 
-  calculMontantFret(codeTarif: string, ileDepartId: number, ileArriveeId: number, poids: number, volume: number, quantite: number): Observable<number> {
+  calculMontantFret(codeTarif: string, ileDepartId: number, ileArriveeId: number, poids: number, volume: number, quantite: number): Observable<TarifFretDto> {
     
     const params = new HttpParams()
     .set('codeTarif', codeTarif)
@@ -52,7 +52,7 @@ export class TarifFretService {
     .set('poids', poids)
     .set('volume', volume)
     .set('quantite', quantite)
-    return this.http.get<number>(`${this.baseUrl}/api/tariffret/calcul/`, {params})
+    return this.http.get<TarifFretDto>(`${this.baseUrl}/api/tariffret/calcul/`, {params})
 
   }
 

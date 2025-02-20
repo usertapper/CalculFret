@@ -13,8 +13,9 @@ export class TarifsRevatuaService {
   baseUrl = environment.apiUrl;
 
 
-  get(): Observable<any> {
+  get(): Observable<any> { 
     return this.http.get<any>(`${this.baseUrl}/api/tarifsrevatuas`);
   }
+  
 
 }

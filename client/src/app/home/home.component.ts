@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl } from '@angular/forms';
+import { ChangeDetectorRef } from '@angular/core';
 
 
 
@@ -55,23 +56,48 @@ export class HomeComponent implements OnInit {
   constructor(
     private ileService : IleService,
     private tarifsrevatuaService : TarifsRevatuaService,
-    private tariffretService : TarifFretService
+    private tariffretService : TarifFretService,
+    private cdr: ChangeDetectorRef,
+
   ) {}
  
 
  
  
   ngOnInit(): void {
- 
-    this.ileService.get().subscribe((data: IleDto[]) => {
+    if (this.codeTarif && this.ileDepartId && this.ileArriveeId && this.poids && this.volume && this.quantite)
+    {
+      this.calculMontantFret(
+        this.codeTarif,
+        this.ileDepartId,
+        this.ileArriveeId,
+        this.poids,
+        this.volume,
+        this.quantite
+      );
+    }
+
+    this.ileService.get().subscribe(
+      (data: IleDto[]) => {
       this.iles = data;
       this.filteredIlesDepart = this.iles;
       this.filteredIlesArrivee = this.iles;
-    });
+      },
+      (error) => {
+        console.error('Error fetching iles:', error);
+      }
+    );
 
-    this.tarifsrevatuaService.get().subscribe((data) => {
-      this.tarifsrevatuas = data;
-    });
+    this.tarifsrevatuaService.get().subscribe(
+      (data) => {
+        this.tarifsrevatuas = data;
+        console.log('Tarifs :', data);
+      },
+      (error) => {
+        console.error('Error fetching tarifs:', error);
+      }
+    );
+
 
     this.ileDepartControl.valueChanges.subscribe(value => {
       this.filteredIlesDepart = this.filterIles(value ?? '');
@@ -80,8 +106,6 @@ export class HomeComponent implements OnInit {
     this.ileArriveeControl.valueChanges.subscribe(value => {
       this.filteredIlesArrivee = this.filterIles(value ?? '');
     });
-
-    this.tariffretService;
 
   }
 
@@ -102,33 +126,55 @@ export class HomeComponent implements OnInit {
 
   onSubmit(): void {
     if (this.ileDepartId && this.ileArriveeId && this.codeTarif ) {
-      this.getTariftFret(this.codeTarif, this.ileDepartId, this.ileArriveeId,);
+      this.getTarifFret(this.codeTarif, this.ileDepartId, this.ileArriveeId,);
     } else {
       this.errorMessage = "Merci de remplir tous les champs";
       this.montant = undefined;
     }
   }
 
-  getTariftFret(codeTarif: string, ileDepartId: number, ileArriveeId: number): void {
+  getTarifFret(codeTarif: string, ileDepartId: number, ileArriveeId: number): void {
+
+
+    console.log("Envoi de la requete avec :", { codeTarif, ileDepartId, ileArriveeId });
+  
     this.tariffretService.getTarifFret(codeTarif, ileDepartId, ileArriveeId).subscribe(
       (data) => {
-        this.montant = this.montant;
+        this.montant = data?.montant ?? undefined;
         this.errorMessage = "";
+        console.log("Appel de l'API (getTarifFret):", data);
       },
       (error) => {
         this.montant = undefined;
-        this.errorMessage = "Aucun montant trouvé pour ces paramètres.";
-        console.error("Erreur:", error);
+        console.error("Erreur API :", error);
+  
+        if (error.status === 404) {
+          this.errorMessage = "Aucun montant trouvé pour ces paramètres.";
+        } else {
+          this.errorMessage = `Erreur (${error.status}): ${error.message}`;
+        }
       }
     );
   }
 
   calculMontantFret(codeTarif: string, ileDepartId: number, ileArriveeId: number, poids: number, volume: number, quantite: number): void {
-    this.tariffretService.calculMontantFret(codeTarif, ileDepartId, ileArriveeId, poids, volume, quantite).subscribe(
-    )
+    console.log("API: ", {codeTarif, ileDepartId, ileArriveeId, poids, volume, quantite});
+  
+      this.tariffretService.calculMontantFret(codeTarif, ileDepartId, ileArriveeId, poids, volume, quantite).subscribe(
+        (data) => {
+          console.log(data);
+          this.result = data?.montant ?? undefined;
+          this.errorMessage = "";
+
+        },
+        (error) => {
+          console.error(error);
+          this.result = undefined;
+          this.errorMessage = `Erreur de calcul du fret (${error.status}: ${error.message})`;
+
+        }
+      );
   }
-
-
 
 
 

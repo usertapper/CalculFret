@@ -20,8 +20,8 @@ export class IleService {
 
   get(): Observable<IleDto[]> {
     return this.http.get<IleDto[]>(`${this.baseUrl}/api/iles`);
-  }
 
+  }
   getById(ileId: number): Observable<IleDto[]> {
     return this.http.get<IleDto[]>(`${this.baseUrl}/api/iles/${ileId}`);
   }

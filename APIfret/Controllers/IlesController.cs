@@ -21,8 +21,7 @@ public class IlesController(DataContext context) : BaseApiController
         return iles;
     }
 
-//endpoint : [HttpGet] (point de terminaison/extrémitée)
-    [HttpGet("{id:int}")] // /api/ile
+    [HttpGet("{id:int}")] 
     public async Task<ActionResult<IleDto>> GetIle(int id)
     {
         var ile = await context.Iles.FindAsync(id);

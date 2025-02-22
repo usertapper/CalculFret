@@ -1,8 +1,9 @@
 <form (ngSubmit)="onSubmit()">
+
   <div class="col-md-2">
     <label>Ile de Départ</label>
     <mat-form-field appaerance="outline">
-      <input type="text" matInput [formControl]="ileDepartControl" [matAutocomplete]="autoDepart" name="ileDepartId" required>
+      <input type="text" matInput [formControl]="ileDepartControl" [matAutocomplete]="autoDepart" name="ileDepartId"  (ngModelChange)="onChange()" required>
         <mat-autocomplete #autoDepart="matAutocomplete" (optionSelected)="setIleDepart($event.option.value)">
         <mat-option selected disabled>Choisissez votre île...</mat-option>
         <mat-option *ngFor="let ile of filteredIlesDepart" [value]="ile">
@@ -15,7 +16,7 @@
   <div class="col-md-2">
     <label>Ile d'Arrivée</label>
     <mat-form-field appearance="outline">
-    <input type="text" matInput [formControl]="ileArriveeControl" [matAutocomplete]="autoArrivee" name="ileArriveeId" required>
+    <input type="text" matInput [formControl]="ileArriveeControl" [matAutocomplete]="autoArrivee" name="ileArriveeId" (ngModelChange)="onChange()" required>
       <mat-autocomplete #autoArrivee="matAutocomplete" (optionSelected)="setIleArrivee($event.option.value)">
       <mat-option selected disabled>Choisissez votre destination...</mat-option>
       <mat-option *ngFor="let ile of filteredIlesArrivee" [value]="ile">
@@ -27,11 +28,29 @@
 
   <div class="col-md-2">
     <label>Marchandises</label>
-    <select class="form-select" [(ngModel)]="codeTarif" name="codeTarif" required>
+    <select class="form-select" [(ngModel)]="codeTarif" name="codeTarif" (ngModelChange)="onChange()" required>
       <option selected disabled>Choisissez votre marchandise...</option>
       <option *ngFor="let tarif of tarifsrevatuas" [value]="tarif.code">{{ tarif.intitule }}</option>
     </select>
   </div>
+
+  <div class="col-md-2">
+    <div *ngIf="montant !== undefined; else noData">
+      <h4>Tarif</h4> 
+      {{ montant | number}}
+    </div>
+
+    <ng-template #noData>
+      <p *ngIf="errorMessage">{{ errorMessage }}</p>
+      <ng-template #noError>
+        <p>Merci de remplir tous les champs</p>
+      </ng-template>
+    </ng-template>
+  </div>
+
+ 
+
+<br>
 
   <div class="col-md-2">
     <label class="form-label">Poids (en Tonne)</label>
@@ -42,15 +61,15 @@
     <input type="number" class="form-control" [(ngModel)]="volume" name="volume" required/>
   </div>
   <div class="col-md-2">
-    <label class="form-label">Quantité</label>
+    <label class="form-label">Nombre de colis</label>
     <input type="number" class="form-control" [(ngModel)]="quantite" name="quantite" required/>
   </div>
 
+
   <div class="container mt-5">
     <div class="text-center">
-      <button type="submit" class="btn btn-lg me-2">Calculer</button>
 
-      <button type="button" class="btn btn-primary btn-lg me-2">Calcul du Fret</button>
+      <button type="button" class="btn btn-primary btn-lg me-2" (click)="calculMontantFret(codeTarif ?? '', ileDepartId ?? 0, ileArriveeId ?? 0, poids ?? 0, volume ?? 0, quantite ?? 0)">Calcul du Fret</button>
 
      <button type="button" class="btn btn-secondary btn-lg me-2" (click)="resetForm()">Annuler</button>
     </div>
@@ -58,10 +77,8 @@
 </form>
 
 <div class="text-center mt-3">
-  <h3>Tarif</h3>
-  <p *ngIf="montant !== undefined; else noData">{{ montant | number}} XPF</p>
   <h3>Fret</h3>
-  <p *ngIf="result !== undefined; else noData">{{ result | number }} XPF</p>
+  <p *ngIf="result !== undefined; else noData">{{ result | number }}</p>
 
 
   <ng-template #noData>

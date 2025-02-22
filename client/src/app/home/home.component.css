@@ -1,5 +1,12 @@
+div.col-md-3
+{
+    display:inline-block;
+    margin: 10px;
+}
+
+
 div.col-md-2
 {
     display:inline-block;
-    margin:10px;
+    margin: 20px;
 }

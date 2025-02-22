@@ -43,8 +43,6 @@ export class HomeComponent implements OnInit {
   result?: number;
 
   errorMessage: string = "";
- 
-
 
 
   ileDepartControl = new FormControl('');
@@ -52,6 +50,7 @@ export class HomeComponent implements OnInit {
 
   filteredIlesDepart: any[] = [];
   filteredIlesArrivee: any[] = [];
+  codesTarifFiltres: any[] = [];
  
   constructor(
     private ileService : IleService,
@@ -65,18 +64,6 @@ export class HomeComponent implements OnInit {
  
  
   ngOnInit(): void {
-    if (this.codeTarif && this.ileDepartId && this.ileArriveeId && this.poids && this.volume && this.quantite)
-    {
-      this.calculMontantFret(
-        this.codeTarif,
-        this.ileDepartId,
-        this.ileArriveeId,
-        this.poids,
-        this.volume,
-        this.quantite
-      );
-    }
-
     this.ileService.get().subscribe(
       (data: IleDto[]) => {
       this.iles = data;
@@ -91,7 +78,6 @@ export class HomeComponent implements OnInit {
     this.tarifsrevatuaService.get().subscribe(
       (data) => {
         this.tarifsrevatuas = data;
-        console.log('Tarifs :', data);
       },
       (error) => {
         console.error('Error fetching tarifs:', error);
@@ -124,6 +110,12 @@ export class HomeComponent implements OnInit {
     this.ileArriveeControl.setValue(ile.intitule);
   }
 
+  onChange(): void {
+      if (this.ileDepartId && this.ileArriveeId && this.codeTarif) {
+        this.getTarifFret(this.codeTarif, this.ileDepartId, this.ileArriveeId);
+      }
+    }
+    
   onSubmit(): void {
     if (this.ileDepartId && this.ileArriveeId && this.codeTarif ) {
       this.getTarifFret(this.codeTarif, this.ileDepartId, this.ileArriveeId,);
@@ -134,9 +126,6 @@ export class HomeComponent implements OnInit {
   }
 
   getTarifFret(codeTarif: string, ileDepartId: number, ileArriveeId: number): void {
-
-
-    console.log("Envoi de la requete avec :", { codeTarif, ileDepartId, ileArriveeId });
   
     this.tariffretService.getTarifFret(codeTarif, ileDepartId, ileArriveeId).subscribe(
       (data) => {
@@ -146,16 +135,17 @@ export class HomeComponent implements OnInit {
       },
       (error) => {
         this.montant = undefined;
-        console.error("Erreur API :", error);
+        console.error("Erreur API :");
   
         if (error.status === 404) {
           this.errorMessage = "Aucun montant trouvé pour ces paramètres.";
         } else {
-          this.errorMessage = `Erreur (${error.status}): ${error.message}`;
+          this.errorMessage = `Erreur (${error.status}):`;
         }
       }
     );
   }
+
 
   calculMontantFret(codeTarif: string, ileDepartId: number, ileArriveeId: number, poids: number, volume: number, quantite: number): void {
     console.log("API: ", {codeTarif, ileDepartId, ileArriveeId, poids, volume, quantite});
@@ -163,14 +153,13 @@ export class HomeComponent implements OnInit {
       this.tariffretService.calculMontantFret(codeTarif, ileDepartId, ileArriveeId, poids, volume, quantite).subscribe(
         (data) => {
           console.log(data);
-          this.result = data?.montant ?? undefined;
+          this.result = data ?? undefined ;
           this.errorMessage = "";
-
         },
         (error) => {
           console.error(error);
           this.result = undefined;
-          this.errorMessage = `Erreur de calcul du fret (${error.status}: ${error.message})`;
+          this.errorMessage = `Erreur de calcul du fret (${error.status}:)`;
 
         }
       );
